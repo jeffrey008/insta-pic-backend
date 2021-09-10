@@ -30,14 +30,4 @@ export class AppController {
     });
   }
 
-  @Post('/post')
-  @UseInterceptors(FileInterceptor('file'))
-  createPost(@Body() userBody, @Res() res) {
-    return this.userService.login(userBody).then((result: boolean) => {
-      if (result) {
-        return res.status(HttpStatus.OK).send();
-      }
-      return res.status(HttpStatus.UNAUTHORIZED).send();
-    });
-  }
 }
