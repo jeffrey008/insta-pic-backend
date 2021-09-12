@@ -5,7 +5,7 @@ import { User } from '../schemas/user.schema';
 
 export type PostDocument = Post & Document;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Post {
   @Prop()
   desc: string;

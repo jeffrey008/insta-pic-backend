@@ -1,30 +1,44 @@
-import { Body, Controller, Get, HttpStatus, Param, Post, Res, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Post,
+  Query,
+  Res,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { PostsService } from './posts.service';
 
 @Controller('posts')
 export class PostsController {
-  @Get('') 
-  getPost(@Param() params, @Res() res) {
-    return `Posts with params ${params}`
+  constructor(private postService: PostsService) {}
 
-    // return this.userService.login(userBody).then((result: boolean) => {
-    //   if (result) {
-    //     return res.status(HttpStatus.OK).send();
-    //   }
-    //   return res.status(HttpStatus.UNAUTHORIZED).send();
-    // });
+  @Get('')
+  getPost(@Query() query, @Res() res) {
+    return this.postService.getAllPosts(query).then((result) => {
+      if (result) {
+        return res.status(HttpStatus.OK).send(result);
+      }
+    });
   }
 
-  @Post('/post')
-  @UseInterceptors(FileInterceptor('file'))
-  createPost(@Body() body, @Res() res) {
-    return `Post created with Body ${body}`
-    // return this.userService.login(userBody).then((result: boolean) => {
-    //   if (result) {
-    //     return res.status(HttpStatus.OK).send();
-    //   }
-    //   return res.status(HttpStatus.UNAUTHORIZED).send();
-    // });
-  }
+  @Post('')
+  @UseInterceptors(FileInterceptor('image'))
+  createPost(
+    @Body() body,
+    @UploadedFile() file: Express.Multer.File,
+    @Res() res,
+  ) {
+    // body['image'] = file.buffer;
 
+    return this.postService.createPost(body).then((result) => {
+      if (result) {
+        return res.status(HttpStatus.CREATED).send();
+      }
+      return res.status(HttpStatus.UNAUTHORIZED).send();
+    });
+  }
 }
