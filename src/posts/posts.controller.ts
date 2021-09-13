@@ -35,8 +35,6 @@ export class PostsController {
     @UploadedFile() file: Express.Multer.File,
     @Res() res,
   ) {
-    // body['image'] = file.buffer;
-
     return this.postService.createPost(body).then((result) => {
       if (result) {
         return res.status(HttpStatus.CREATED).send();
