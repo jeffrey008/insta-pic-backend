@@ -6,16 +6,18 @@ import {
   Post,
   Query,
   Res,
-  UploadedFile,
+  UploadedFile, UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PostsService } from './posts.service';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('posts')
 export class PostsController {
   constructor(private postService: PostsService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get('')
   getPost(@Query() query, @Res() res) {
     return this.postService.getAllPosts(query).then((result) => {
@@ -25,6 +27,7 @@ export class PostsController {
     });
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('')
   @UseInterceptors(FileInterceptor('image'))
   createPost(

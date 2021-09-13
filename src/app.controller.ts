@@ -7,14 +7,14 @@ import {
   Res,
 } from '@nestjs/common';
 import { AppService } from './app.service';
-import { UserService } from './user/user.service';
-import { User } from './schemas/user.schema';
+import { UsersService } from './users/users.service';
+import { User } from './users/user.schema';
 
 @Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
-    private userService: UserService,
+    private userService: UsersService,
   ) {}
 
   @Get()
@@ -40,7 +40,7 @@ export class AppController {
   login(@Body() userBody, @Res() res) {
     return this.userService.login(userBody).then((result: boolean) => {
       if (result) {
-        return res.status(HttpStatus.OK).json({ username: userBody.username });
+        return res.status(HttpStatus.OK).json(result);
       }
       return res
         .status(HttpStatus.UNAUTHORIZED)
